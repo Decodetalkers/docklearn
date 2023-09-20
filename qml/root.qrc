@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC>
+    <qresource prefix="/deepin/dock">
+        <file>main.qml</file>
+    </qresource>
+</RCC>
