@@ -73,7 +73,7 @@ WindowElementGroup::refreshActive()
 {
     bool isActive = std::find_if(m_elements.begin(), m_elements.end(), [](WindowElement *e) {
                         return e->isActive();
-                    }) == m_elements.end();
+                    }) != m_elements.end();
     if (isActive != m_isActive) {
         return;
     }
