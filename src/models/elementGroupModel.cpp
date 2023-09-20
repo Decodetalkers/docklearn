@@ -1,9 +1,12 @@
 #include "elementGroupModel.h"
+#include "backgrounds/testbackground/backgroundtest.h"
 #include <QHash>
 
 ElementGroupModel::ElementGroupModel(QObject *parent)
   : m_groups({})
 {
+    TestBackground *background = new TestBackground(this);
+    connect(background, &TestBackground::windowGenerated, this, &ElementGroupModel::insert);
 }
 
 void

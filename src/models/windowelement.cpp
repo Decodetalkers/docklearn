@@ -1,4 +1,7 @@
 #include "windowelement.h"
+
+#include <QDebug>
+
 #include <algorithm>
 
 WindowElement::WindowElement(const QString &id, QObject *parent)
