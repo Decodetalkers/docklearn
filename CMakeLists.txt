@@ -19,9 +19,16 @@ add_executable(${PROJECT_NAME}
   src/models/windowelement.cpp
   src/models/elementGroupModel.h
   src/models/elementGroupModel.cpp
+  src/backgrounds/testbackground/backgroundtest.h
+  src/backgrounds/testbackground/backgroundtest.cpp
   src/main.cpp
   qml/root.qrc
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  src
+)
+
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   Qt5::Quick

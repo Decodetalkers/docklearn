@@ -16,7 +16,7 @@ public:
     inline QVector<WindowElementGroup *> groups() { return m_groups; }
 
 public slots:
-    void insert(WindowElementGroup *group);
+    void insert(WindowElement *group);
     void remove(WindowElementGroup *group);
 
 signals:
