@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QVector>
 
+// TODO: window name
+
 class WindowElement : public QObject
 {
     Q_OBJECT
@@ -27,7 +29,7 @@ public slots:
 
 signals:
     void activeChanged();
-    void requestIconChanged(const QString &);
+    void requestGroupIconChanged(const QString &);
     void iconChanged();
     void selfDestory(WindowElement *);
 

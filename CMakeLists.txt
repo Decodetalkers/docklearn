@@ -17,6 +17,8 @@ find_package(Qt5 COMPONENTS Quick Widgets QuickControls2 REQUIRED)
 add_executable(${PROJECT_NAME}
   src/models/windowelement.h
   src/models/windowelement.cpp
+  src/models/elementGroupModel.h
+  src/models/elementGroupModel.cpp
   src/main.cpp
   qml/root.qrc
 )
