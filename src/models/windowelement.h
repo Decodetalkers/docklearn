@@ -24,6 +24,7 @@ public:
     Q_INVOKABLE void requestActiveChanged();
 
 public slots:
+    void setActive(bool);
     void deleteSelf();
     void setIcon(const QString &icon);
 
@@ -59,9 +60,13 @@ public:
     Q_PROPERTY(QString id READ id NOTIFY idChanged)
     inline QString id() { return m_id; }
 
+    Q_PROPERTY(bool isActive READ isActive NOTIFY activeChanged)
+    inline bool isActive() { return m_isActive; }
+
     Q_INVOKABLE void requestActiveChanged();
 
 public slots:
+    void refreshActive();
     void appendWindowElement(WindowElement *element);
     void removeWindowElement(WindowElement *element);
     void setIcon(const QString &icon);
@@ -75,6 +80,7 @@ signals:
     void deleteSelf(WindowElementGroup *);
 
 private:
+    bool m_isActive = true;
     bool m_isPin;
     QString m_id;
     QVector<WindowElement *> m_elements;
