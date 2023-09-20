@@ -2,29 +2,25 @@
 
 #include "windowelement.h"
 
-#include <QAbstractListModel>
 #include <QObject>
 #include <QVector>
 
-class ElementGroupModel final : public QAbstractListModel
+class ElementGroupModel final : public QObject
 {
     Q_OBJECT
 
 public:
     explicit ElementGroupModel(QObject *parent = nullptr);
-    enum ModelRole
-    {
-        Display = Qt::DisplayRole,
-        Icon,
-    };
-    Q_ENUM(ModelRole)
 
+    Q_PROPERTY(QVector<WindowElementGroup *> groups READ groups NOTIFY groupsChanged)
+    inline QVector<WindowElementGroup *> groups() { return m_groups; }
+
+public slots:
     void insert(WindowElementGroup *group);
+    void remove(WindowElementGroup *group);
 
-protected:
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
+signals:
+    void groupsChanged();
 
 private:
     QVector<WindowElementGroup *> m_groups;

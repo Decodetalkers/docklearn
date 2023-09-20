@@ -9,33 +9,14 @@ ElementGroupModel::ElementGroupModel(QObject *parent)
 void
 ElementGroupModel::insert(WindowElementGroup *group)
 {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_groups.push_back(group);
-    endInsertRows();
+    connect(group, &WindowElementGroup::deleteSelf, this, &ElementGroupModel::remove);
+    Q_EMIT groupsChanged();
 }
 
-QVariant
-ElementGroupModel::data(const QModelIndex &index, int role) const
+void
+ElementGroupModel::remove(WindowElementGroup *group)
 {
-    switch (role) {
-    case Display:
-        return m_groups[index.row()]->id();
-    case Icon:
-        return m_groups[index.row()]->icon();
-    default:
-        return QVariant();
-    }
-}
-
-QHash<int, QByteArray>
-ElementGroupModel::roleNames() const
-{
-    static const QHash<int, QByteArray> roles{{Display, "Name"}, {Icon, "Icon"}};
-    return roles;
-}
-
-int
-ElementGroupModel::rowCount(const QModelIndex &) const
-{
-    return m_groups.count();
+    m_groups.removeOne(group);
+    Q_EMIT groupsChanged();
 }
