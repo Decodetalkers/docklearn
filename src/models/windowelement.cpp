@@ -51,7 +51,7 @@ WindowElementGroup::appendWindowElement(WindowElement *element)
     connect(element, &WindowElement::selfDestory, this, &WindowElementGroup::removeWindowElement);
     connect(element, &WindowElement::requestGroupIconChanged, this, &WindowElementGroup::setIcon);
     connect(
-      element, &WindowElement::requestActiveChanged, this, &WindowElementGroup::refreshActive);
+      element, &WindowElement::activeChanged, this, &WindowElementGroup::refreshActive);
     m_icon = element->icon();
     m_elements.push_back(element);
     Q_EMIT elementsChanged();
@@ -71,9 +71,10 @@ WindowElementGroup::removeWindowElement(WindowElement *element)
 void
 WindowElementGroup::refreshActive()
 {
-    bool isActive = std::find(
-      m_elements.begin(), m_elements.end(), [](WindowElement *e) { return e->isActive(); });
-    if (isActive == m_isActive) {
+    bool isActive = std::find_if(m_elements.begin(), m_elements.end(), [](WindowElement *e) {
+                        return e->isActive();
+                    }) == m_elements.end();
+    if (isActive != m_isActive) {
         return;
     }
     m_isActive = isActive;
