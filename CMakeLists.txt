@@ -23,6 +23,8 @@ add_executable(${PROJECT_NAME}
   src/models/elementGroupModel.cpp
   src/backgrounds/testbackground/backgroundtest.h
   src/backgrounds/testbackground/backgroundtest.cpp
+  src/backgrounds/x11/XorgBackground.h
+  src/backgrounds/x11/XorgBackground.cpp
   src/main.cpp
   qml/root.qrc
 )
