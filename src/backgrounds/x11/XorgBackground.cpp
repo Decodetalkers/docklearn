@@ -1,4 +1,5 @@
 #include "XorgBackground.h"
+#include "xcbutils.h"
 
 #include <QDebug>
 #include <QRandomGenerator>
@@ -131,6 +132,7 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
         qDebug() << static_cast<int>(xid);
         return;
     }
+    qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid));
     xids.push_back(xid);
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));

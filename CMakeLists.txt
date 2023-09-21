@@ -25,6 +25,8 @@ add_executable(${PROJECT_NAME}
   src/backgrounds/testbackground/backgroundtest.cpp
   src/backgrounds/x11/XorgBackground.h
   src/backgrounds/x11/XorgBackground.cpp
+  src/backgrounds/x11/xcbutils.h
+  src/backgrounds/x11/xcbutils.cpp
   src/main.cpp
   qml/root.qrc
 )
