@@ -6,6 +6,11 @@
 
 typedef xcb_window_t XWindow;
 
+struct WmClass {
+    std::string className;
+    std::string instanceName;
+};
+
 class XCBUtils
 {
 public:
@@ -23,7 +28,8 @@ public:
         return &instance;
     }
 
-    std::string getWmClass(XWindow xid);
+    WmClass getWmClass(XWindow xid);
+    bool isGoodWindow(XWindow xid);
 
 private:
     xcb_connection_t *m_connection;

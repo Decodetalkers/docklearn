@@ -101,7 +101,7 @@ XorgBackground::run()
         }
         case ConfigureNotify: {
             XMapEvent *em = (XMapEvent *)(&event);
-            qDebug() << "Configure is :" << em->window;
+            //qDebug() << "Configure is :" << em->window;
             // std::cout << "ccc" << std::endl;
             //  XConfigureEvent *eC = (XConfigureEvent *)(&event);
 
@@ -132,10 +132,12 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
         qDebug() << static_cast<int>(xid);
         return;
     }
-    qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid));
+    qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     xids.push_back(xid);
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));
     Q_EMIT windowGenerated(window);
 }
+
+
