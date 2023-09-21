@@ -20,7 +20,14 @@ typedef xcb_window_t XWindow;
 
 XorgBackground::XorgBackground(QObject *parent)
   : QThread(parent)
+  , m_run(true)
 {
+}
+
+void
+XorgBackground::stoploop()
+{
+    m_run = false;
 }
 
 void
@@ -74,7 +81,7 @@ XorgBackground::run()
     attr.event_mask &= ~SubstructureRedirectMask;
 
     XSelectInput(dyp, w, attr.event_mask);
-    while (true) {
+    while (m_run) {
         XEvent event;
         XNextEvent(dyp, &event);
 
@@ -84,6 +91,7 @@ XorgBackground::run()
             break;
         }
         case MapNotify: {
+            XMapEvent *em = (XMapEvent *)(&event);
             quint64 id            = QRandomGenerator::global()->generate64();
             WindowElement *window = new WindowElement(QString::number(id));
             window->setIcon(QString::fromStdString(SVG_TEST.data()));

@@ -3,6 +3,8 @@
 
 #include "windowelement.h"
 
+#include "backgrounds/x11/XorgBackground.h"
+
 #include <QObject>
 #include <QVector>
 
@@ -12,6 +14,7 @@ class ElementGroupModel final : public QObject
 
 public:
     explicit ElementGroupModel(QObject *parent = nullptr);
+    ~ElementGroupModel();
 
     Q_PROPERTY(QVector<WindowElementGroup *> groups READ groups NOTIFY groupsChanged)
     inline QVector<WindowElementGroup *> groups() { return m_groups; }
@@ -24,5 +27,6 @@ signals:
     void groupsChanged();
 
 private:
+    XorgBackground *m_xorgBackground;
     QVector<WindowElementGroup *> m_groups;
 };

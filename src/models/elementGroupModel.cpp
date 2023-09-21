@@ -1,13 +1,21 @@
 #include "elementGroupModel.h"
-#include "backgrounds/x11//XorgBackground.h"
+#include "backgrounds/x11/XorgBackground.h"
+#include <QDebug>
 #include <QHash>
 
 ElementGroupModel::ElementGroupModel(QObject *parent)
   : m_groups({})
 {
-    XorgBackground *background = new XorgBackground(this);
-    connect(background, &XorgBackground::windowGenerated, this, &ElementGroupModel::insert);
-    background->start();
+    m_xorgBackground = new XorgBackground(this);
+    connect(m_xorgBackground, &XorgBackground::windowGenerated, this, &ElementGroupModel::insert);
+    m_xorgBackground->start();
+}
+
+ElementGroupModel::~ElementGroupModel()
+{
+    m_xorgBackground->stoploop();
+    m_xorgBackground->quit();
+    m_xorgBackground->wait();
 }
 
 void

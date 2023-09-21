@@ -5,8 +5,8 @@ import Dock.Global 1.0
 
 ApplicationWindow {
     visible: true
-    maximumHeight: 200
-    minimumHeight: 200
+    //maximumHeight: 200
+    //minimumHeight: 200
     ListView {
         anchors.fill : parent
         model: ElementGroupModel.groups

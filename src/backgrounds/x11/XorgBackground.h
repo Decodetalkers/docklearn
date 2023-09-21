@@ -9,9 +9,14 @@ class XorgBackground final : public QThread
 public:
     explicit XorgBackground(QObject *parent);
 
+    void stoploop();
+
 protected:
     void run() override;
 
 signals:
     void windowGenerated(WindowElement *window);
+
+private:
+    bool m_run;
 };

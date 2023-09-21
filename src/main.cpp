@@ -20,7 +20,6 @@ main(int argc, char *argv[])
 
     registerGlobalType();
     QQmlApplicationEngine engine;
-    QQuickStyle::setStyle("Material");
 
     const QUrl url = QUrl("qrc:/deepin/dock/main.qml");
     QObject::connect(
