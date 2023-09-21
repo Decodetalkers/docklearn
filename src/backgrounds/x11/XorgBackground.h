@@ -25,6 +25,7 @@ private:
 
 signals:
     void windowGenerated(WindowElement *window);
+    void wmDestroyed(XWindow xid);
 
 private:
     bool m_run;

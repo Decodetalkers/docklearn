@@ -89,7 +89,8 @@ XorgBackground::run()
 
         switch (event.type) {
         case DestroyNotify: {
-            // XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
+            XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
+            Q_EMIT wmDestroyed(XWindow(eD->window));
             break;
         }
         case MapNotify: {
@@ -101,9 +102,9 @@ XorgBackground::run()
         }
         case ConfigureNotify: {
             XMapEvent *em = (XMapEvent *)(&event);
-            //qDebug() << "Configure is :" << em->window;
-            // std::cout << "ccc" << std::endl;
-            //  XConfigureEvent *eC = (XConfigureEvent *)(&event);
+            // qDebug() << "Configure is :" << em->window;
+            //  std::cout << "ccc" << std::endl;
+            //   XConfigureEvent *eC = (XConfigureEvent *)(&event);
 
             break;
         }
@@ -127,9 +128,12 @@ XorgBackground::run()
 void
 XorgBackground::handleMapNotifyEvent(XWindow xid)
 {
-    qDebug() << static_cast<int>(xid);
     if (xids.contains(xid)) {
         qDebug() << static_cast<int>(xid);
+        return;
+    }
+    if (!XCBUtils::instance()->isGoodWindow(xid) ||
+        XCBUtils::instance()->getWmClass(xid).instanceName.length() == 0) {
         return;
     }
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
@@ -138,6 +142,10 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));
     Q_EMIT windowGenerated(window);
+    connect(this, &XorgBackground::wmDestroyed, window, [window, xid](XWindow newid) {
+        if (newid != xid) {
+            return;
+        }
+        window->deleteSelf();
+    });
 }
-
-
