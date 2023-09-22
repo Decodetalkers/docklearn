@@ -25,7 +25,6 @@ XorgBackground::XorgBackground(QObject *parent)
   , m_xids({})
 {
     m_rootWindow = XCBUtils::instance()->getRootWindow();
-    handleClientListChanged();
 }
 
 const std::vector<std::string> IGNORED_ATOM = {"_NET_WM_WINDOW_TYPE_NOTIFICATION",
@@ -42,6 +41,8 @@ XorgBackground::stoploop()
 void
 XorgBackground::run()
 {
+    handleClientListChanged();
+
     Display *dyp;
     int screen;
     char *displayName = nullptr;
