@@ -129,13 +129,15 @@ void
 XorgBackground::handleMapNotifyEvent(XWindow xid)
 {
     if (xids.contains(xid)) {
-        qDebug() << static_cast<int>(xid);
+        qDebug() << xid;
         return;
     }
     if (!XCBUtils::instance()->isGoodWindow(xid) ||
         XCBUtils::instance()->getWmClass(xid).instanceName.length() == 0) {
         return;
     }
+
+    qDebug() << "pid is" << XCBUtils::instance()->getWmPid(xid);
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     xids.push_back(xid);
 
@@ -144,10 +146,11 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));
     Q_EMIT windowGenerated(window);
-    connect(this, &XorgBackground::wmDestroyed, window, [window, xid](XWindow newid) {
+    connect(this, &XorgBackground::wmDestroyed, window, [window, xid, this](XWindow newid) {
         if (newid != xid) {
             return;
         }
+        xids.removeOne(xid);
         window->deleteSelf();
     });
 }

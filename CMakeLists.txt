@@ -14,7 +14,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt5 COMPONENTS Quick Widgets QuickControls2 REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(XCB REQUIRED IMPORTED_TARGET x11 xcb xcb-icccm xkbcommon xcb-ewmh)
+pkg_check_modules(XCB REQUIRED IMPORTED_TARGET x11 xcb xcb-icccm xkbcommon xcb-ewmh xres)
 
 add_executable(${PROJECT_NAME}
   src/models/windowelement.h

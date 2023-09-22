@@ -40,6 +40,7 @@ public:
     WmClass getWmClass(XWindow xid);
     bool isGoodWindow(XWindow xid);
     WMIcon getWmIcon(XWindow xid);
+    uint32_t getWmPid(XWindow xid);
 
 private:
     xcb_connection_t *m_connection;
