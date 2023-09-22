@@ -27,7 +27,8 @@ XorgBackground::XorgBackground(QObject *parent)
 }
 
 const std::vector<std::string> IGNORED_ATOM = {"_NET_WM_WINDOW_TYPE_NOTIFICATION",
-                                               "_NET_WM_WINDOW_TYPE_TYPE_TOOLTIP",
+                                               "_NET_WM_WINDOW_TYPE_TOOLTIP",
+                                               "_NET_WM_WINDOW_TYPE_POPUP_MENU",
                                                "_NET_WM_WINDOW_TYPE_TOOLBAR"};
 
 void
@@ -142,11 +143,13 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
     }
 
     auto atoms = XCBUtils::instance()->getWMWindowType(xid);
-    for (const std::string &atom : IGNORED_ATOM) {
-        auto it = std::find(atoms.begin(), atoms.end(), atom);
-        if (it == atoms.end()) {
-            qDebug() << "is ignored window";
-            return;
+    for (std::string atom : IGNORED_ATOM) {
+        for (auto mime_atom : atoms) {
+            std::string xcbatom = XCBUtils::instance()->getAtomName(mime_atom);
+            if (xcbatom == atom) {
+                qDebug() << "Not allowed Window";
+                return;
+            }
         }
     }
 
