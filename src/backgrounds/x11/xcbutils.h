@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 
@@ -37,6 +38,8 @@ public:
         return &instance;
     }
 
+    XWindow getRootWindow();
+    std::list<XWindow> getClientList();
     WmClass getWmClass(XWindow xid);
     bool isGoodWindow(XWindow xid);
     WMIcon getWmIcon(XWindow xid);

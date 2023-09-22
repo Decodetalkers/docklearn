@@ -24,6 +24,8 @@ XorgBackground::XorgBackground(QObject *parent)
   , m_run(true)
   , xids({})
 {
+    m_rootWindow = XCBUtils::instance()->getRootWindow();
+    qDebug() << XCBUtils::instance()->getClientList().size();
 }
 
 const std::vector<std::string> IGNORED_ATOM = {"_NET_WM_WINDOW_TYPE_NOTIFICATION",

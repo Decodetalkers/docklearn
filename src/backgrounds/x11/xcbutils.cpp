@@ -27,6 +27,35 @@ XCBUtils::~XCBUtils()
         m_connection = nullptr;
     }
 }
+XWindow
+XCBUtils::getRootWindow()
+{
+    XWindow rootWindow = 0;
+    /* Get the first screen */
+    xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(m_connection)).data;
+    if (screen) {
+        rootWindow = screen->root;
+    }
+
+    return rootWindow;
+}
+
+std::list<XWindow>
+XCBUtils::getClientList()
+{
+    std::list<XWindow> ret;
+    xcb_get_property_cookie_t cookie = xcb_ewmh_get_client_list_stacking(&m_ewmh, 0);
+    xcb_ewmh_get_windows_reply_t reply;
+    if (xcb_ewmh_get_client_list_stacking_reply(&m_ewmh, cookie, &reply, nullptr)) {
+        for (uint8_t i = 0; i < reply.windows_len; ++i) {
+            ret.push_back(reply.windows[i]);
+        }
+
+        xcb_ewmh_get_windows_reply_wipe(&reply);
+    }
+
+    return ret;
+}
 
 WmClass
 XCBUtils::getWmClass(XWindow xid)
@@ -145,6 +174,7 @@ XCBUtils::getWmPid(XWindow xid)
 
     pid_t pid = -1;
     for (long i = 0; i < num_ids; i++) {
+        qDebug() << XResGetClientPid(&client_ids[i]);
         if (client_ids[i].spec.mask == XRES_CLIENT_ID_PID_MASK) {
             pid = XResGetClientPid(&client_ids[i]);
             break;

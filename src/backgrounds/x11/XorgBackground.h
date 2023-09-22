@@ -28,6 +28,7 @@ signals:
     void wmDestroyed(XWindow xid);
 
 private:
+    XWindow m_rootWindow;
     bool m_run;
     QVector<XWindow> xids;
 };
