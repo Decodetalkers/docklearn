@@ -138,6 +138,8 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
     }
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     xids.push_back(xid);
+
+    qDebug() << XCBUtils::instance()->getWmIcon(xid).data.size();
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));

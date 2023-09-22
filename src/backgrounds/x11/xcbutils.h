@@ -1,14 +1,23 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 
 typedef xcb_window_t XWindow;
 
-struct WmClass {
+struct WmClass
+{
     std::string className;
     std::string instanceName;
+};
+
+struct WMIcon
+{
+    uint32_t width;             /** Icon width */
+    uint32_t height;            /** Icon height */
+    std::vector<uint32_t> data; /** Rows, left to right and top to bottom of the CARDINAL ARGB */
 };
 
 class XCBUtils
@@ -30,7 +39,9 @@ public:
 
     WmClass getWmClass(XWindow xid);
     bool isGoodWindow(XWindow xid);
+    WMIcon getWmIcon(XWindow xid);
 
 private:
     xcb_connection_t *m_connection;
+    xcb_ewmh_connection_t m_ewmh;
 };
