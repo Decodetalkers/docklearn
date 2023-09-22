@@ -22,10 +22,10 @@ constexpr auto SVG_TEST =
 XorgBackground::XorgBackground(QObject *parent)
   : QThread(parent)
   , m_run(true)
-  , xids({})
+  , m_xids({})
 {
     m_rootWindow = XCBUtils::instance()->getRootWindow();
-    qDebug() << XCBUtils::instance()->getClientList().size();
+    handleClientListChanged();
 }
 
 const std::vector<std::string> IGNORED_ATOM = {"_NET_WM_WINDOW_TYPE_NOTIFICATION",
@@ -96,13 +96,13 @@ XorgBackground::run()
 
         switch (event.type) {
         case DestroyNotify: {
-            XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
-            Q_EMIT wmDestroyed(XWindow(eD->window));
+            //XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
+            //Q_EMIT wmDestroyed(XWindow(eD->window));
             break;
         }
         case MapNotify: {
-            XMapEvent *em = (XMapEvent *)(&event);
-            handleMapNotifyEvent(XWindow(em->window));
+            //XMapEvent *em = (XMapEvent *)(&event);
+            //handleNewWindow(XWindow(em->window));
             // XMapEvent *eM = (XMapEvent *)(&event);
 
             break;
@@ -116,7 +116,8 @@ XorgBackground::run()
             break;
         }
         case PropertyNotify: {
-            // XPropertyEvent *eP = (XPropertyEvent *)(&event);
+            XPropertyEvent *eP = (XPropertyEvent *)(&event);
+            handlePropertyChanged(eP->window);
 
             // std::cout << "dddd" << std::endl;
             break;
@@ -133,9 +134,17 @@ XorgBackground::run()
 }
 
 void
-XorgBackground::handleMapNotifyEvent(XWindow xid)
+XorgBackground::handlePropertyChanged(XWindow xid)
 {
-    if (xids.contains(xid)) {
+    if (xid == m_rootWindow) {
+        handleClientListChanged();
+    }
+}
+
+void
+XorgBackground::handleNewWindow(XWindow xid)
+{
+    if (m_xids.contains(xid)) {
         qDebug() << xid;
         return;
     }
@@ -157,7 +166,7 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
 
     qDebug() << "pid is" << XCBUtils::instance()->getWmPid(xid);
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
-    xids.push_back(xid);
+    m_xids.insert(xid);
 
     qDebug() << XCBUtils::instance()->getWmIcon(xid).data.size();
     quint64 id            = QRandomGenerator::global()->generate64();
@@ -168,7 +177,31 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
         if (newid != xid) {
             return;
         }
-        xids.removeOne(xid);
+        m_xids.remove(xid);
         window->deleteSelf();
     });
+}
+
+void
+XorgBackground::handleClientListChanged()
+{
+    QSet<XWindow> newClientList, oldClientList, addClientList, rmClientList;
+    for (auto atom : XCBUtils::instance()->getClientList()) {
+        newClientList.insert(atom);
+    }
+    for (auto atom : m_xids) {
+        oldClientList.insert(atom);
+    }
+
+    addClientList = newClientList - oldClientList;
+    rmClientList  = oldClientList - newClientList;
+    if (!addClientList.isEmpty()) {
+        for (auto xid : addClientList) {
+            handleNewWindow(xid);
+        }
+    }
+
+    for (auto xid : rmClientList) {
+        Q_EMIT wmDestroyed(xid);
+    }
 }

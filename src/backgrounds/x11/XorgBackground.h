@@ -4,6 +4,7 @@
 
 #include <QThread>
 #include <QVector>
+#include <QSet>
 
 #include <xcb/xproto.h>
 
@@ -21,7 +22,10 @@ protected:
     void run() override;
 
 private:
-    void handleMapNotifyEvent(XWindow xid);
+    void handleNewWindow(XWindow xid);
+    void handlePropertyChanged(XWindow xid);
+
+    void handleClientListChanged();
 
 signals:
     void windowGenerated(WindowElement *window);
@@ -30,5 +34,5 @@ signals:
 private:
     XWindow m_rootWindow;
     bool m_run;
-    QVector<XWindow> xids;
+    QSet<XWindow> m_xids;
 };
