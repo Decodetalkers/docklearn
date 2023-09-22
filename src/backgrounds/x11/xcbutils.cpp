@@ -154,3 +154,34 @@ XCBUtils::getWmPid(XWindow xid)
     XResClientIdsDestroy(num_ids, client_ids);
     return pid;
 }
+
+std::vector<xcb_atom_t>
+XCBUtils::getWMWindowType(XWindow xid)
+{
+    std::vector<xcb_atom_t> ret;
+    xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_window_type(&m_ewmh, xid);
+    xcb_ewmh_get_atoms_reply_t reply;
+    if (xcb_ewmh_get_wm_window_type_reply(&m_ewmh, cookie, &reply, nullptr)) {
+        for (uint32_t i = 0; i < reply.atoms_len; i++) {
+            ret.push_back(reply.atoms[i]);
+        }
+        xcb_ewmh_get_atoms_reply_wipe(&reply);
+    }
+    return ret;
+}
+
+std::string
+XCBUtils::getAtomName(xcb_atom_t atom)
+{
+    std::string ret;
+    xcb_get_atom_name_cookie_t cookie = xcb_get_atom_name(m_connection, atom);
+    std::shared_ptr<xcb_get_atom_name_reply_t> reply(
+      xcb_get_atom_name_reply(m_connection, cookie, nullptr),
+      [=](xcb_get_atom_name_reply_t *reply) { free(reply); });
+    if (reply) {
+        char *name = xcb_get_atom_name_name(reply.get());
+        ret        = name;
+    }
+
+    return ret;
+}
