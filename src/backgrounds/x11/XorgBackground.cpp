@@ -26,6 +26,10 @@ XorgBackground::XorgBackground(QObject *parent)
 {
 }
 
+const std::vector<std::string> IGNORED_ATOM = {"_NET_WM_WINDOW_TYPE_NOTIFICATION",
+                                               "_NET_WM_WINDOW_TYPE_TYPE_TOOLTIP",
+                                               "_NET_WM_WINDOW_TYPE_TOOLBAR"};
+
 void
 XorgBackground::stoploop()
 {
@@ -132,19 +136,24 @@ XorgBackground::handleMapNotifyEvent(XWindow xid)
         qDebug() << xid;
         return;
     }
-    if (!XCBUtils::instance()->isGoodWindow(xid) ||
-        XCBUtils::instance()->getWmClass(xid).instanceName.length() == 0) {
+    if (!XCBUtils::instance()->isGoodWindow(xid)) {
+        // XCBUtils::instance()->getWmClass(xid).instanceName.length() == 0) {
         return;
+    }
+
+    auto atoms = XCBUtils::instance()->getWMWindowType(xid);
+    for (const std::string &atom : IGNORED_ATOM) {
+        auto it = std::find(atoms.begin(), atoms.end(), atom);
+        if (it == atoms.end()) {
+            qDebug() << "is ignored window";
+            return;
+        }
     }
 
     qDebug() << "pid is" << XCBUtils::instance()->getWmPid(xid);
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     xids.push_back(xid);
 
-    auto atoms = XCBUtils::instance()->getWMWindowType(xid);
-    for (auto atom : atoms) {
-        qDebug() << QString::fromStdString(XCBUtils::instance()->getAtomName(atom));
-    }
     qDebug() << XCBUtils::instance()->getWmIcon(xid).data.size();
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
