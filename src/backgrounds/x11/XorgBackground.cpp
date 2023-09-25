@@ -97,14 +97,14 @@ XorgBackground::run()
 
         switch (event.type) {
         case DestroyNotify: {
-            //XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
-            //Q_EMIT wmDestroyed(XWindow(eD->window));
+            // XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
+            // Q_EMIT wmDestroyed(XWindow(eD->window));
             break;
         }
         case MapNotify: {
-            //XMapEvent *em = (XMapEvent *)(&event);
-            //handleNewWindow(XWindow(em->window));
-            // XMapEvent *eM = (XMapEvent *)(&event);
+            // XMapEvent *em = (XMapEvent *)(&event);
+            // handleNewWindow(XWindow(em->window));
+            //  XMapEvent *eM = (XMapEvent *)(&event);
 
             break;
         }
@@ -173,7 +173,9 @@ XorgBackground::handleNewWindow(XWindow xid)
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));
+    qDebug() << "aa";
     Q_EMIT windowGenerated(window);
+    qDebug() << "bb";
     connect(this, &XorgBackground::wmDestroyed, window, [window, xid, this](XWindow newid) {
         if (newid != xid) {
             return;
