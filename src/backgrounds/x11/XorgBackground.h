@@ -8,6 +8,7 @@
 
 #include <xcb/xproto.h>
 
+typedef xcb_atom_t XCBAtom;
 typedef xcb_window_t XWindow;
 
 class XorgBackground final : public QThread
@@ -23,8 +24,9 @@ protected:
 
 private:
     void handleNewWindow(XWindow xid);
-    void handlePropertyChanged(XWindow xid);
+    void handlePropertyChanged(XWindow xid, XCBAtom atom);
 
+    void handlerootWindowPropertyNotifyEvent(XCBAtom atom);
     void handleClientListChanged();
 
 signals:

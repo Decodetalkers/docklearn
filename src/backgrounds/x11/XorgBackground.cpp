@@ -118,7 +118,7 @@ XorgBackground::run()
         }
         case PropertyNotify: {
             XPropertyEvent *eP = (XPropertyEvent *)(&event);
-            handlePropertyChanged(eP->window);
+            handlePropertyChanged(eP->window, eP->atom);
 
             // std::cout << "dddd" << std::endl;
             break;
@@ -135,10 +135,18 @@ XorgBackground::run()
 }
 
 void
-XorgBackground::handlePropertyChanged(XWindow xid)
+XorgBackground::handlerootWindowPropertyNotifyEvent(XCBAtom atom)
+{
+    if (XCBUtils::instance()->getAtomName(atom) == "_NET_CLIENT_LIST") {
+        handleClientListChanged();
+    }
+}
+
+void
+XorgBackground::handlePropertyChanged(XWindow xid, XCBAtom atom)
 {
     if (xid == m_rootWindow) {
-        handleClientListChanged();
+        handlerootWindowPropertyNotifyEvent(atom);
     }
 }
 
@@ -173,9 +181,7 @@ XorgBackground::handleNewWindow(XWindow xid)
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(QString::fromStdString(SVG_TEST.data()));
-    qDebug() << "aa";
     Q_EMIT windowGenerated(window);
-    qDebug() << "bb";
     connect(this, &XorgBackground::wmDestroyed, window, [window, xid, this](XWindow newid) {
         if (newid != xid) {
             return;
