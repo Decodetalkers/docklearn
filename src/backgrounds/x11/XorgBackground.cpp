@@ -137,7 +137,8 @@ XorgBackground::run()
 void
 XorgBackground::handlerootWindowPropertyNotifyEvent(XCBAtom atom)
 {
-    if (XCBUtils::instance()->getAtomName(atom) == "_NET_CLIENT_LIST") {
+    // qDebug() << QString::fromStdString(XCBUtils::instance()->getAtomName(atom));
+    if (atom == XCBUtils::instance()->getAtom("_NET_CLIENT_LIST").value()) {
         handleClientListChanged();
     }
 }

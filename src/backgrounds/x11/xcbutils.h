@@ -1,10 +1,11 @@
 #pragma once
 
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
+#include <optional>
 
 typedef xcb_window_t XWindow;
 
@@ -46,6 +47,7 @@ public:
     uint32_t getWmPid(XWindow xid);
     std::vector<xcb_atom_t> getWMWindowType(XWindow xid);
     std::string getAtomName(xcb_atom_t atom);
+    std::optional<xcb_atom_t> getAtom(const char *name);
 
 private:
     xcb_connection_t *m_connection;

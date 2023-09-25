@@ -215,3 +215,16 @@ XCBUtils::getAtomName(xcb_atom_t atom)
 
     return ret;
 }
+
+std::optional<xcb_atom_t>
+XCBUtils::getAtom(const char *name)
+{
+    xcb_intern_atom_cookie_t cookie = xcb_intern_atom(m_connection, false, strlen(name), name);
+    std::shared_ptr<xcb_intern_atom_reply_t> reply(
+      xcb_intern_atom_reply(m_connection, cookie, nullptr),
+      [=](xcb_intern_atom_reply_t *reply) { free(reply); });
+    if (reply) {
+        return reply->atom;
+    }
+    return std::nullopt;
+}
