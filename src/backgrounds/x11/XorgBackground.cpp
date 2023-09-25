@@ -231,7 +231,6 @@ XorgBackground::generateIconData(XWindow xid)
     QImage image = QImage((uchar *)icon.data.data(), icon.width, icon.width, QImage::Format_ARGB32);
     QBuffer buffer;
     buffer.open(QIODevice::WriteOnly);
-    image.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     image.save(&buffer, "PNG");
 
     QString encode = buffer.data().toBase64();
