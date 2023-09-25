@@ -177,6 +177,9 @@ XorgBackground::handleNewWindow(XWindow xid)
     }
 
     qDebug() << "pid is" << XCBUtils::instance()->getWmPid(xid);
+    if (XCBUtils::instance()->getWmClass(xid).instanceName == "dde-dock") {
+        return;
+    }
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     m_xids.insert(xid);
 
@@ -222,9 +225,9 @@ QString
 XorgBackground::generateIconData(XWindow xid)
 {
     WMIcon icon = XCBUtils::instance()->getWmIcon(xid);
-    //if (icon.width == 0) {
-    //    return QByteArray::fromStdString(SVG_TEST.data()).toBase64();
-    //}
+    if (icon.width == 0) {
+        return QByteArray::fromStdString(SVG_TEST.data()).toBase64();
+    }
     QImage image = QImage((uchar *)icon.data.data(), icon.width, icon.width, QImage::Format_ARGB32);
     QBuffer buffer;
     buffer.open(QIODevice::WriteOnly);
