@@ -23,6 +23,12 @@ ElementGroupModel::insert(WindowElement *window)
 {
     QVector<WindowElementGroup *>::iterator it =
       std::find_if(m_groups.begin(), m_groups.end(), [window](WindowElementGroup *g) {
+          auto elements = g->elements();
+          for (auto element : elements) {
+              if (element->pid() == window->pid()) {
+                  return true;
+              }
+          }
           return g->id() == window->id();
       });
     if (it != m_groups.end()) {

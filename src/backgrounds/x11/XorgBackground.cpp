@@ -99,23 +99,12 @@ XorgBackground::run()
 
         switch (event.type) {
         case DestroyNotify: {
-            // XDestroyWindowEvent *eD = (XDestroyWindowEvent *)(&event);
-            // Q_EMIT wmDestroyed(XWindow(eD->window));
             break;
         }
         case MapNotify: {
-            // XMapEvent *em = (XMapEvent *)(&event);
-            // handleNewWindow(XWindow(em->window));
-            //  XMapEvent *eM = (XMapEvent *)(&event);
-
             break;
         }
         case ConfigureNotify: {
-            XMapEvent *em = (XMapEvent *)(&event);
-            // qDebug() << "Configure is :" << em->window;
-            //  std::cout << "ccc" << std::endl;
-            //   XConfigureEvent *eC = (XConfigureEvent *)(&event);
-
             break;
         }
         case PropertyNotify: {
@@ -176,17 +165,19 @@ XorgBackground::handleNewWindow(XWindow xid)
         }
     }
 
-    qDebug() << "pid is" << XCBUtils::instance()->getWmPid(xid);
+
     if (XCBUtils::instance()->getWmClass(xid).instanceName == "dde-dock") {
         return;
     }
     qDebug() << QString::fromStdString(XCBUtils::instance()->getWmClass(xid).instanceName);
     m_xids.insert(xid);
 
+    uint32_t pid =  XCBUtils::instance()->getWmPid(xid);
     qDebug() << XCBUtils::instance()->getWmIcon(xid).data.size();
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
     window->setIcon(generateIconData(xid));
+    window->setPid(pid);
     Q_EMIT windowGenerated(window);
     connect(this, &XorgBackground::wmDestroyed, window, [window, xid, this](XWindow newid) {
         if (newid != xid) {

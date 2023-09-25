@@ -26,9 +26,6 @@ ApplicationWindow {
                 ToolTip.text: modelData.id
                 ToolTip.visible: _mouseArea.containsMouse;
             }
-
-
         }
     }
-
 }

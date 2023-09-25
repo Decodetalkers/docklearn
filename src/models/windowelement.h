@@ -21,12 +21,15 @@ public:
 
     inline QString id() { return m_id; }
 
+    inline uint32_t pid() { return m_pid; }
+
     Q_INVOKABLE void requestActiveChanged();
 
 public slots:
     void setActive(bool);
     void deleteSelf();
     void setIcon(const QString &icon);
+    void setPid(const uint32_t pid) { m_pid = pid; }
 
 signals:
     void activeChanged();
@@ -36,6 +39,7 @@ signals:
 
 private:
     QString m_id;
+    uint32_t m_pid  = 0;
     bool m_isActive = true;
     // INFO: base 64
     QString m_icon;
