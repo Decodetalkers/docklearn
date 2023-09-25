@@ -1,7 +1,9 @@
 #include "XorgBackground.h"
 #include "xcbutils.h"
 
+#include <QBuffer>
 #include <QDebug>
+#include <QImage>
 #include <QRandomGenerator>
 
 #include <cstdio>
@@ -181,7 +183,7 @@ XorgBackground::handleNewWindow(XWindow xid)
     qDebug() << XCBUtils::instance()->getWmIcon(xid).data.size();
     quint64 id            = QRandomGenerator::global()->generate64();
     WindowElement *window = new WindowElement(QString::number(id));
-    window->setIcon(QString::fromStdString(SVG_TEST.data()));
+    window->setIcon(generateIconData(xid));
     Q_EMIT windowGenerated(window);
     connect(this, &XorgBackground::wmDestroyed, window, [window, xid, this](XWindow newid) {
         if (newid != xid) {
@@ -214,4 +216,22 @@ XorgBackground::handleClientListChanged()
     for (auto xid : rmClientList) {
         Q_EMIT wmDestroyed(xid);
     }
+}
+
+QString
+XorgBackground::generateIconData(XWindow xid)
+{
+    WMIcon icon = XCBUtils::instance()->getWmIcon(xid);
+    //if (icon.width == 0) {
+    //    return QByteArray::fromStdString(SVG_TEST.data()).toBase64();
+    //}
+    QImage image = QImage((uchar *)icon.data.data(), icon.width, icon.width, QImage::Format_ARGB32);
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    image.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    image.save(&buffer, "PNG");
+
+    QString encode = buffer.data().toBase64();
+    buffer.close();
+    return encode;
 }

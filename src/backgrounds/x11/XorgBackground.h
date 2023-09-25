@@ -28,6 +28,7 @@ private:
 
     void handlerootWindowPropertyNotifyEvent(XCBAtom atom);
     void handleClientListChanged();
+    QString generateIconData(XWindow xid);
 
 signals:
     void windowGenerated(WindowElement *window);
