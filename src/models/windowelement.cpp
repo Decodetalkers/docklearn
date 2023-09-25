@@ -61,7 +61,7 @@ void
 WindowElementGroup::removeWindowElement(WindowElement *element)
 {
     m_elements.removeOne(element);
-    if (m_elements.isEmpty() || !m_isPin) {
+    if (m_elements.isEmpty() && !m_isPin) {
         Q_EMIT deleteSelf(this);
         return;
     }
