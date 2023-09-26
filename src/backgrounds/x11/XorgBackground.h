@@ -15,7 +15,13 @@ class XorgBackground final : public QThread
 {
     Q_OBJECT
 public:
-    explicit XorgBackground(QObject *parent);
+    static XorgBackground *instance()
+    {
+        static XorgBackground instance;
+        return &instance;
+    }
+
+    explicit XorgBackground(QObject *parent = nullptr);
 
     void stoploop();
 

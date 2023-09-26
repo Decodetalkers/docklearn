@@ -1,3 +1,4 @@
+#include "backgrounds/x11/XorgBackground.h"
 #include "models/elementGroupModel.h"
 
 #include <QGuiApplication>
@@ -27,8 +28,12 @@ main(int argc, char *argv[])
       &QQmlApplicationEngine::objectCreated,
       &app,
       [url](QObject *obj, const QUrl &objUrl) {
-          if (!obj && url == objUrl)
+          if (!obj && url == objUrl) {
+              XorgBackground::instance()->stoploop();
+              XorgBackground::instance()->quit();
+              XorgBackground::instance()->wait();
               QCoreApplication::exit(-1);
+          }
       },
       Qt::QueuedConnection);
 

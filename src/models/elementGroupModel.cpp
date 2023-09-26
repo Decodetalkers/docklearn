@@ -6,7 +6,7 @@
 ElementGroupModel::ElementGroupModel(QObject *parent)
   : m_groups({})
 {
-    m_xorgBackground = new XorgBackground(this);
+    m_xorgBackground = XorgBackground::instance();
     connect(m_xorgBackground, &XorgBackground::windowGenerated, this, &ElementGroupModel::insert);
     m_xorgBackground->start();
 }
